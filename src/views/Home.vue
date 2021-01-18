@@ -74,7 +74,7 @@
       <el-container>
         <el-header style="text-align: right; font-size: 12px">
           <div class="userInfo">
-            <img src="../../public/image/logo.png" alt />
+            <img src="../../public/image/head.jpg" alt />
             <span>{{ user }}</span
             >|
             <button @click="getOut">退出登录</button>

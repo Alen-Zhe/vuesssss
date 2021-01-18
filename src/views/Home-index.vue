@@ -64,8 +64,8 @@
 }
 </style>
 <script>
-import { getdown } from "../api/getDown";
 import { getTotal } from "../api/getTotal";
+import axios from "axios";
 
 export default {
   data() {
@@ -107,11 +107,30 @@ export default {
   methods: {
     downs() {
       const that = this;
-      getdown({
-        startDate: that.dataDoload.endDate[0],
-        endDate: that.dataDoload.endDate[1],
-      }).then(({ data }) => {
-        console.log(data);
+      return new Promise((resolve) => {
+        axios({
+          method: "POST",
+          url: "http://localhost:8080/api/order/exportExcel",
+          data: {
+            startDate: that.dataDoload.endDate[0].getTime(),
+            endDate: that.dataDoload.endDate[1].getTime(),
+          },
+          responseType: "blob",
+        }).then((res) => {
+          resolve(res.data);
+          that.dialogVisible = false;
+          const link = document.createElement("a");
+          let blob = new Blob([res.data], {
+            type: "application/octet-stream",
+          });
+          link.style.display = "none";
+          link.href = URL.createObjectURL(blob);
+          link.download = `本月收入统计-${new Date().getTime()}.xls`; //下载的文件名
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          console.log(res.data);
+        });
       });
     },
   },
